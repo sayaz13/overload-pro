@@ -1,4 +1,4 @@
-const CACHE_NAME = 'overload-fitness-v29';
+const CACHE_NAME = 'overload-fitness-v30';
 
 const STATIC_ASSETS = [
   './',
