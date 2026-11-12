@@ -1,0 +1,3070 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <script>
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+      const div = document.createElement('div');
+      div.style.position = 'fixed';
+      div.style.top = '0';
+      div.style.left = '0';
+      div.style.right = '0';
+      div.style.background = '#FF453A';
+      div.style.color = '#fff';
+      div.style.padding = '16px';
+      div.style.zIndex = '999999';
+      div.style.fontSize = '14px';
+      div.style.wordBreak = 'break-all';
+      div.innerHTML = '<b>HATA:</b> ' + msg + '<br><small>Satır: ' + lineNo + '</small>';
+      document.body ? document.body.appendChild(div) : document.documentElement.appendChild(div);
+      return false;
+    };
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Overload Pro | Fitness Takip</title>
+  
+  <!-- Apple iOS Web App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Overload">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#0a0a0c">
+
+  <style>
+    :root {
+      --bg-main: #000000;
+      --bg-card: #141416;
+      --bg-subcard: #1c1c1e;
+      --bg-input: #242426;
+      --accent-green: #30D158;
+      --accent-blue: #0A84FF;
+      --accent-orange: #FF9F0A;
+      --accent-red: #FF453A;
+      --accent-purple: #BF5AF2;
+      --text-main: #FFFFFF;
+      --text-muted: #8E8E93;
+      --border-color: #2c2c2e;
+      --safe-top: env(safe-area-inset-top, 20px);
+      --safe-bottom: env(safe-area-inset-bottom, 20px);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-top: var(--safe-top);
+      padding-bottom: calc(var(--safe-bottom) + 85px);
+      user-select: none;
+    }
+
+    /* iOS Header */
+    header {
+      padding: 12px 16px 10px;
+      position: sticky;
+      top: 0;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      z-index: 50;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 17px;
+      color: #000;
+    }
+
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .brand-text span {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Week Dropdown Selector */
+    .week-select-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 6px 10px;
+      gap: 6px;
+    }
+
+    .week-select-wrapper select {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      padding-right: 14px;
+      cursor: pointer;
+    }
+
+    .week-select-wrapper::after {
+      content: '▾';
+      font-size: 12px;
+      color: var(--accent-green);
+      position: absolute;
+      right: 8px;
+      pointer-events: none;
+    }
+
+    /* Start Date Sub-Header Banner */
+    .start-date-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+      font-size: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .start-date-info {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .start-date-info strong {
+      color: #fff;
+    }
+
+    .change-date-btn {
+      background: transparent;
+      border: none;
+      color: var(--accent-blue);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Segmented Day Scroller */
+    .day-scroller {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .day-scroller::-webkit-scrollbar { display: none; }
+
+    .day-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 74px;
+    }
+
+    .day-pill .day-title { font-size: 11px; opacity: 0.7; }
+    .day-pill .day-name { font-size: 13px; margin-top: 2px; }
+    .day-pill .day-date { font-size: 10px; opacity: 0.8; margin-top: 2px; font-weight: 500; }
+
+    .day-pill.active {
+      background: var(--accent-green);
+      color: #000000;
+      border-color: var(--accent-green);
+      font-weight: 700;
+      transform: scale(1.02);
+    }
+    .day-pill.active .day-title { opacity: 0.85; }
+    .day-pill.active .day-date { opacity: 0.9; font-weight: 700; }
+
+    /* Content Area */
+    .container {
+      padding: 14px 14px;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .day-summary-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .day-summary-info h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .day-summary-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .finish-workout-btn {
+      background: var(--accent-green);
+      color: #000;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Exercise Card */
+    .exercise-card {
+      background: var(--bg-card);
+      border-radius: 18px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    .exercise-header {
+      padding: 13px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .exercise-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+
+    .exercise-meta {
+      display: flex;
+      gap: 6px;
+      font-size: 11px;
+      flex-wrap: wrap;
+    }
+
+    .badge-target {
+      color: var(--accent-blue);
+      background: rgba(10, 132, 255, 0.12);
+      padding: 3px 7px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .badge-time {
+      color: var(--accent-purple);
+      background: rgba(191, 90, 242, 0.12);
+      padding: 3px 7px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .badge-rest {
+      color: var(--accent-orange);
+      background: rgba(255, 159, 10, 0.12);
+      padding: 3px 7px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .ex-header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .move-day-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--accent-blue);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .move-day-btn:active {
+      background: rgba(10, 132, 255, 0.2);
+    }
+
+    .remove-ex-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    .remove-ex-btn:hover, .remove-ex-btn:active {
+      color: var(--accent-red);
+      background: rgba(255, 69, 58, 0.15);
+    }
+
+    /* Chart & Analytics Styling */
+    .chart-container-card {
+      background: var(--bg-card);
+      border-radius: 18px;
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chart-select {
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      outline: none;
+      max-width: 230px;
+    }
+    .chart-metric-chips {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .chart-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .chart-chip.active {
+      background: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+    .chart-svg-wrap {
+      width: 100%;
+      height: 220px;
+      position: relative;
+    }
+
+    /* Sets Table */
+    .sets-table {
+      width: 100%;
+      padding: 10px 12px;
+    }
+
+    .set-row-header {
+      display: grid;
+      grid-template-columns: 26px 1.1fr 1fr 1fr 48px 32px 24px;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+    }
+
+    .set-row-header div:nth-child(2) { text-align: left; padding-left: 2px; }
+
+    .set-row {
+      display: grid;
+      grid-template-columns: 26px 1.1fr 1fr 1fr 48px 32px 24px;
+      gap: 5px;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background 0.2s;
+    }
+
+    .ex-order-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 11px;
+      padding: 3px 6px;
+      cursor: pointer;
+    }
+    .ex-order-btn:active { background: rgba(255, 255, 255, 0.2); }
+
+    .ex-note-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: #ddd;
+      outline: none;
+      margin-top: 6px;
+    }
+    .ex-note-input:focus {
+      border-color: var(--accent-blue);
+      background: rgba(10, 132, 255, 0.05);
+    }
+
+    .set-row.completed {
+      opacity: 0.95;
+    }
+
+    .set-num {
+      width: 24px;
+      height: 24px;
+      background: var(--bg-subcard);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin: 0 auto;
+    }
+
+    .prev-stats {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px 6px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .prev-stats span {
+      font-weight: 600;
+      color: #e0e0e0;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .prev-stats .copy-icon {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-left: 2px;
+    }
+
+    .input-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      height: 36px;
+      border-radius: 8px;
+      width: 100%;
+      outline: none;
+    }
+    .input-box::placeholder {
+      color: rgba(255, 255, 255, 0.28);
+      font-weight: 500;
+      font-size: 11px;
+    }
+    .input-box:focus {
+      border-color: var(--accent-green);
+      background: #2a2a2e;
+    }
+
+    .check-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-subcard);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .check-btn.checked {
+      background: var(--accent-green);
+      color: #000;
+      border-color: var(--accent-green);
+      transform: scale(1.05);
+    }
+
+    .delete-set-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: color 0.15s;
+      margin: 0 auto;
+    }
+
+    .delete-set-btn:hover, .delete-set-btn:active {
+      color: var(--accent-red);
+      background: rgba(255, 69, 58, 0.15);
+    }
+
+    .exercise-actions {
+      padding: 9px 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .add-set-btn {
+      background: transparent;
+      border: none;
+      color: var(--accent-blue);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .progressive-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .progressive-badge.gain {
+      background: rgba(48, 209, 88, 0.15);
+      color: var(--accent-green);
+    }
+
+    /* Add Custom Exercise Dotted Card */
+    .add-custom-exercise-card {
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-bottom: 24px;
+      transition: all 0.2s;
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .add-custom-exercise-card:active {
+      background: rgba(10, 132, 255, 0.1);
+      border-color: var(--accent-blue);
+    }
+
+    .add-custom-exercise-card span {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Floating Rest Timer */
+    .rest-timer-bar {
+      position: fixed;
+      bottom: calc(var(--safe-bottom) + 72px);
+      left: 14px;
+      right: 14px;
+      max-width: 500px;
+      margin: 0 auto;
+      background: rgba(28, 28, 30, 0.96);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      border-radius: 18px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s ease;
+    }
+
+    .rest-timer-bar.alarm-pulse {
+      border-color: var(--accent-green);
+      background: rgba(30, 45, 30, 0.98);
+      box-shadow: 0 0 35px 8px rgba(48, 209, 88, 0.5);
+      animation: alarmShake 0.4s ease-in-out 3;
+    }
+
+    @keyframes alarmShake {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .rest-timer-bar.hidden { display: none; }
+
+    @keyframes slideUp {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .timer-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .timer-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 3px solid var(--accent-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+    }
+
+    .timer-clock {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .timer-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      padding: 6px 11px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Bottom Tab Bar */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--safe-bottom) + 60px);
+      padding-bottom: var(--safe-bottom);
+      background: rgba(18, 18, 20, 0.94);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 90;
+    }
+
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 600;
+      width: 33%;
+      transition: color 0.2s;
+    }
+
+    .tab-item.active {
+      color: var(--accent-green);
+    }
+
+    .tab-item svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    /* Screen Visibility */
+    .view-screen { display: none; }
+    .view-screen.active { display: block; }
+
+    /* --- STATS & DAY PROGRESS SCREEN STYLING --- */
+    .stats-day-selector {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      scrollbar-width: none;
+    }
+    .stats-day-selector::-webkit-scrollbar { display: none; }
+
+    .stats-day-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 9px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .stats-day-btn.active {
+      background: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+      box-shadow: 0 3px 12px rgba(10, 132, 255, 0.3);
+    }
+
+    .stats-summary-card {
+      background: linear-gradient(135deg, rgba(20, 20, 24, 0.95), rgba(10, 132, 255, 0.08));
+      border: 1px solid rgba(10, 132, 255, 0.3);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .stats-summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .metric-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .metric-box .label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .metric-box .value {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .metric-box .diff {
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .diff.positive { color: var(--accent-green); }
+    .diff.neutral { color: var(--accent-blue); }
+    .diff.negative { color: var(--accent-red); }
+
+    /* Exercise Progress Card in Stats */
+    .stat-ex-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
+    .stat-ex-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .stat-ex-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .stat-percent-badge {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 9px;
+      border-radius: 8px;
+    }
+
+    .stat-bars-container {
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .bar-label {
+      width: 70px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .bar-val {
+      width: 75px;
+      text-align: right;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .stat-sets-breakdown {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .set-chip {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 3px 7px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .set-chip strong { color: #fff; }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.hidden { display: none; }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 22px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.85);
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-box h3 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .modal-box p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .type-toggle-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .type-toggle-btn {
+      flex: 1;
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .type-toggle-btn.active {
+      background: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Rest Day Screen */
+    .rest-day-card {
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--bg-card);
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+    }
+    .rest-day-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .rest-day-card h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .rest-day-card p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-top">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-text">
+          <h1>Overload Pro</h1>
+          <span id="current-date">Bugün</span>
+        </div>
+      </div>
+
+      <!-- Native iOS Dropdown List for Weeks -->
+      <div class="week-select-wrapper">
+        <span>📅</span>
+        <select id="header-week-select" onchange="onWeekDropdownChange(this.value)">
+          <!-- Populated by JS -->
+        </select>
+      </div>
+    </div>
+
+    <!-- Start Date Bar & Quick Change Button -->
+    <div class="start-date-bar">
+      <div class="start-date-info">
+        <span>🚩 Başlangıç:</span>
+        <strong id="header-start-date-text">Seçilmedi</strong>
+        <span id="header-week-calc-badge" style="color: var(--accent-green); margin-left: 4px; font-weight: 700;"></span>
+      </div>
+      <button class="change-date-btn" onclick="openDateModal()">Tarihi Değiştir</button>
+    </div>
+
+    <!-- Day Selector Tabs -->
+    <div class="day-scroller" id="day-scroller">
+      <!-- Generated via JS -->
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- SCREEN 1: Workout View -->
+    <section id="view-workout" class="view-screen active">
+      <div class="day-summary-card">
+        <div class="day-summary-info">
+          <h2 id="day-title">1. GÜN: PUSH (İtiş)</h2>
+          <p id="day-subtitle">Göğüs, Omuz, Triceps</p>
+        </div>
+        <button class="finish-workout-btn" onclick="finishWorkout()">
+          <span>✓</span> Kaydet
+        </button>
+      </div>
+
+      <!-- Exercise Cards Container -->
+      <div id="exercises-container"></div>
+
+      <!-- Add Custom Exercise Button -->
+      <div class="add-custom-exercise-card" id="add-custom-ex-trigger" onclick="openCustomExerciseModal()">
+        <span>➕ Bu Güne Ekstra Hareket Ekle (Plank, Kol vb.)</span>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: Progress & Analytics View -->
+    <section id="view-progress" class="view-screen">
+      <div class="day-summary-card">
+        <div class="day-summary-info">
+          <h2>Gelişim & İstatistikler</h2>
+          <p id="stats-subtitle">Geçen haftaya göre güç ve hacim artışı</p>
+        </div>
+      </div>
+
+      <!-- Day selector specifically for Stats view -->
+      <div class="stats-day-selector" id="stats-day-selector">
+        <!-- Generated by JS -->
+      </div>
+
+      <!-- Overall Day Summary & Progress Percentages -->
+      <div id="stats-content-area"></div>
+    </section>
+
+    <!-- SCREEN 3: Settings & Start Date Management -->
+    <section id="view-settings" class="view-screen">
+      <div class="day-summary-card">
+        <div class="day-summary-info">
+          <h2>Ayarlar & Takvim</h2>
+          <p>Başlangıç tarihi ve veri yönetimi</p>
+        </div>
+      </div>
+
+      <div class="stat-ex-card">
+        <h3 class="stat-ex-title" style="margin-bottom: 8px;">🔊 Dinlenme Sesi</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          Dinlenme süresi bittiğinde çalacak bip sesini test edin:
+        </p>
+        <button class="finish-workout-btn" style="background: var(--bg-subcard); color:#fff; border: 1px solid var(--border-color); width: 100%; justify-content: center; font-weight:700;" onclick="testAlarmAndVibrate()">
+          🔊 Bip Sesini Test Et
+        </button>
+      </div>
+
+      <div class="stat-ex-card">
+        <h3 class="stat-ex-title" style="margin-bottom: 8px;">📅 Program Başlangıç Tarihi</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          Seçtiğiniz tarihten itibaren 7 gün dolduğunda uygulama otomatik olarak 2. haftaya geçer.
+        </p>
+        <button class="finish-workout-btn" style="background: var(--bg-subcard); color:#fff; border: 1px solid var(--border-color); width: 100%; justify-content: center;" onclick="openDateModal()">
+          📅 Başlangıç Tarihini Seç / Değiştir
+        </button>
+        <p id="start-date-calc-info" style="font-size: 12px; color: var(--accent-green); margin-top: 10px; font-weight: 600;"></p>
+      </div>
+
+      <div class="stat-ex-card">
+        <h3 class="stat-ex-title" style="margin-bottom: 10px;">📁 Veri Yedekleme</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+          Tüm ağırlık geçmişinizi telefonunuza dosya olarak indirebilir veya geri yükleyebilirsiniz.
+        </p>
+        <div style="display: flex; gap: 10px;">
+          <button class="finish-workout-btn" style="background: var(--accent-blue); color:#fff;" onclick="exportData()">
+            💾 Yedeği İndir
+          </button>
+          <button class="finish-workout-btn" style="background: var(--bg-subcard); color:#fff; border: 1px solid var(--border-color);" onclick="document.getElementById('import-file').click()">
+            📂 Yedeği Yükle
+          </button>
+          <input type="file" id="import-file" style="display:none;" accept=".json" onchange="importData(event)">
+        </div>
+      </div>
+
+      <div class="stat-ex-card" style="border-color: rgba(255, 69, 58, 0.3);">
+        <h3 class="stat-ex-title" style="color: var(--accent-red); margin-bottom: 6px;">⚠️ Sıfırlama</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Tüm antrenman geçmişini siler.</p>
+        <button class="finish-workout-btn" style="background: var(--accent-red); color:#fff;" onclick="resetAllData()">Tüm Verileri Sıfırla</button>
+      </div>
+    </section>
+
+    <!-- Native Hardware Accelerated Alarm Sound -->
+    <audio id="alarm-audio" src="./alarm.wav" preload="auto" playsinline></audio>
+
+  </main>
+
+  <!-- MODAL 1: START DATE PICKER -->
+  <div class="modal-overlay hidden" id="date-modal">
+    <div class="modal-box">
+      <h3>📅 Başlangıç Tarihi</h3>
+      <p>Programa başlayacağınız tarihi seçin. O günden itibaren sayaç işlemeye başlar ve 7 gün dolduğunda otomatik 2. haftaya geçer.</p>
+      
+      <input type="date" id="modal-date-input" class="input-box" style="text-align: left; padding: 0 12px;">
+
+      <div class="modal-actions">
+        <button class="modal-btn" style="background: var(--bg-subcard); color: var(--text-muted);" onclick="closeDateModal()">Vazgeç</button>
+        <button class="modal-btn" style="background: var(--accent-green); color: #000;" onclick="saveStartDateFromModal()">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: ADD CUSTOM EXERCISE (WITH REPS OR TIME SUPPORT) -->
+  <div class="modal-overlay hidden" id="custom-ex-modal">
+    <div class="modal-box">
+      <h3>➕ Ekstra Hareket Ekle</h3>
+      <p id="modal-day-label">Bu güne eklemek istediğiniz hareketi tanımlayın.</p>
+      
+      <div class="form-group">
+        <label>Hareket Adı</label>
+        <input type="text" id="custom-name-input" class="input-box" placeholder="Örn: Plank, Dips, Barfiks, Biceps..." style="text-align: left; padding: 0 12px;">
+      </div>
+
+      <div class="form-group">
+        <label>Ölçüm Türü</label>
+        <div class="type-toggle-group">
+          <button type="button" class="type-toggle-btn active" id="type-weight-btn" onclick="setCustomType('reps')">
+            🏋️ Ağırlık × Tekrar (kg)
+          </button>
+          <button type="button" class="type-toggle-btn" id="type-time-btn" onclick="setCustomType('time')">
+            ⏱️ Süre Bazlı (sn / dk)
+          </button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-group">
+          <label>Hedef Set</label>
+          <input type="number" id="custom-sets-input" class="input-box" value="3" min="1" max="10">
+        </div>
+        <div class="form-group">
+          <label>Dinlenme (sn)</label>
+          <input type="number" id="custom-rest-input" class="input-box" value="60" min="15" step="15">
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="modal-btn" style="background: var(--bg-subcard); color: var(--text-muted);" onclick="closeCustomExerciseModal()">Vazgeç</button>
+        <button class="modal-btn" style="background: var(--accent-green); color: #000;" onclick="saveCustomExercise()">Hareketi Ekle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: MOVE EXERCISE TO ANOTHER DAY -->
+  <div class="modal-overlay hidden" id="move-day-modal">
+    <div class="modal-box">
+      <h3>📅 Hareketi Başka Güne Taşı</h3>
+      <p id="move-day-info">Bu egzersizi hangi güne aktarmak istiyorsunuz?</p>
+      
+      <div class="form-group">
+        <label>Hedef Gün</label>
+        <select id="move-target-day-select" class="input-box" style="text-align: left; padding: 0 10px;">
+          <!-- Dinamik doldurulacak -->
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="modal-btn" style="background: var(--bg-subcard); color: var(--text-muted);" onclick="closeMoveDayModal()">Vazgeç</button>
+        <button class="modal-btn" style="background: var(--accent-blue); color: #fff;" onclick="confirmMoveExerciseToDay()">Taşı</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Rest Timer Pill -->
+  <div class="rest-timer-bar hidden" id="rest-timer-bar">
+    <div class="timer-info">
+      <div class="timer-circle">⏱️</div>
+      <div>
+        <div class="timer-clock" id="timer-display">01:30</div>
+        <div class="timer-label">Dinlenme Sayacı</div>
+      </div>
+    </div>
+    <div class="timer-controls">
+      <button class="timer-btn" onclick="adjustTimer(30)">+30s</button>
+      <button class="timer-btn" onclick="skipTimer()">Kapat</button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="tab-bar">
+    <div class="tab-item active" onclick="switchTab('workout')">
+      <svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg>
+      <span>Antrenman</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('progress')">
+      <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+      <span>İlerleme</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('settings')">
+      <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      <span>Ayarlar</span>
+    </div>
+  </nav>
+
+  <script>
+    // --- 1. DEFAULT WORKOUT PROGRAM (Exact user image) ---
+    const WORKOUT_PROGRAM = [
+      {
+        id: 'day-1',
+        dayNumber: 1,
+        title: '1. GÜN: PUSH (İtiş)',
+        subtitle: 'Göğüs, Omuz, Triceps',
+        isRest: false,
+        exercises: [
+          { id: 'bp', name: 'Bench Press (Barbell / Dumbbell)', targetSets: 4, targetReps: '6 - 8', restSec: 150, type: 'reps' },
+          { id: 'idp', name: 'Incline Dumbbell Press', targetSets: 3, targetReps: '8 - 10', restSec: 90, type: 'reps' },
+          { id: 'odp', name: 'Overhead Dumbbell Press', targetSets: 3, targetReps: '8 - 10', restSec: 90, type: 'reps' },
+          { id: 'dlr', name: 'Dumbbell Lateral Raise', targetSets: 4, targetReps: '12 - 15', restSec: 75, type: 'reps' },
+          { id: 'rtp', name: 'Rope Triceps Pushdown', targetSets: 3, targetReps: '10 - 12', restSec: 60, type: 'reps' }
+        ]
+      },
+      {
+        id: 'day-2',
+        dayNumber: 2,
+        title: '2. GÜN: PULL (Çekiş)',
+        subtitle: 'Sırt, Arka Omuz, Biceps',
+        isRest: false,
+        exercises: [
+          { id: 'lp', name: 'Barfiks veya Lat Pulldown', targetSets: 4, targetReps: '6 - 8', restSec: 120, type: 'reps' },
+          { id: 'scr', name: 'Seated Cable Row', targetSets: 3, targetReps: '8 - 10', restSec: 90, type: 'reps' },
+          { id: 'fp', name: 'Face Pull', targetSets: 4, targetReps: '12 - 15', restSec: 60, type: 'reps' },
+          { id: 'bc', name: 'Barbell Curl / EZ Bar Curl', targetSets: 3, targetReps: '8 - 10', restSec: 90, type: 'reps' },
+          { id: 'hc', name: 'Dumbbell Hammer Curl', targetSets: 3, targetReps: '10 - 12', restSec: 75, type: 'reps' }
+        ]
+      },
+      {
+        id: 'day-3',
+        dayNumber: 3,
+        title: '3. GÜN: LEGS (Bacak)',
+        subtitle: 'Ön Bacak, Arka Bacak, Kalf',
+        isRest: false,
+        exercises: [
+          { id: 'bs', name: 'Barbell Squat', targetSets: 4, targetReps: '6 - 8', restSec: 150, type: 'reps' },
+          { id: 'rdl', name: 'Romanian Deadlift (RDL)', targetSets: 3, targetReps: '8 - 10', restSec: 120, type: 'reps' },
+          { id: 'le', name: 'Leg Extension', targetSets: 3, targetReps: '10 - 12', restSec: 75, type: 'reps' },
+          { id: 'llc', name: 'Lying Leg Curl', targetSets: 3, targetReps: '10 - 12', restSec: 75, type: 'reps' },
+          { id: 'scr_calf', name: 'Standing Calf Raise', targetSets: 4, targetReps: '12 - 15', restSec: 60, type: 'reps' }
+        ]
+      },
+      {
+        id: 'day-4',
+        dayNumber: 4,
+        title: '4. GÜN: REST (Dinlenme)',
+        subtitle: 'Kas Onarımı ve Büyüme',
+        isRest: true,
+        exercises: []
+      },
+      {
+        id: 'day-5',
+        dayNumber: 5,
+        title: '5. GÜN: UPPER (Üst Vücut)',
+        subtitle: 'Tüm Üst Vücut',
+        isRest: false,
+        exercises: [
+          { id: 'ibp', name: 'Incline Barbell Press', targetSets: 4, targetReps: '6 - 8', restSec: 120, type: 'reps' },
+          { id: 'dbr', name: 'Dumbbell Row / Bent Over Row', targetSets: 4, targetReps: '8 - 10', restSec: 90, type: 'reps' },
+          { id: 'dlr2', name: 'Dumbbell Lateral Raise', targetSets: 4, targetReps: '12 - 15', restSec: 75, type: 'reps' },
+          { id: 'idc', name: 'Incline Dumbbell Curl', targetSets: 3, targetReps: '10 - 12', restSec: 75, type: 'reps' },
+          { id: 'sc', name: 'Skullcrusher (EZ Bar / Dumbbell)', targetSets: 3, targetReps: '10 - 12', restSec: 75, type: 'reps' }
+        ]
+      },
+      {
+        id: 'day-6',
+        dayNumber: 6,
+        title: '6. GÜN: LOWER & CORE (Alt Vücut & Karın)',
+        subtitle: 'Alt Vücut & Karın',
+        isRest: false,
+        exercises: [
+          { id: 'lp_lower', name: 'Leg Press', targetSets: 4, targetReps: '8 - 10', restSec: 120, type: 'reps' },
+          { id: 'hs', name: 'Hack Squat veya Bulgarian Split Squat', targetSets: 3, targetReps: '8 - 10', restSec: 90, type: 'reps' },
+          { id: 'llc2', name: 'Lying Leg Curl', targetSets: 3, targetReps: '10 - 12', restSec: 90, type: 'reps' },
+          { id: 'seat_calf', name: 'Seated Calf Raise', targetSets: 4, targetReps: '12 - 15', restSec: 60, type: 'reps' },
+          { id: 'hlr', name: 'Hanging Leg Raise / Plank', targetSets: 3, targetReps: '12-15 / 60 sn', restSec: 60, type: 'time' }
+        ]
+      },
+      {
+        id: 'day-7',
+        dayNumber: 7,
+        title: '7. GÜN: REST (Dinlenme)',
+        subtitle: 'Tam Dinlenme Günü',
+        isRest: true,
+        exercises: []
+      }
+    ];
+
+    // --- 2. CUSTOM EXERCISES & ORDER STORAGE ---
+    // Format: { "day-1": [ { id: 'custom_xxx', name: 'Plank', targetSets: 3, targetReps: '60 sn', restSec: 60, type: 'time' } ] }
+    let customExercises = JSON.parse(localStorage.getItem('overload_custom_exercises')) || {};
+    let exerciseOrderMap = JSON.parse(localStorage.getItem('overload_exercise_order_map')) || {};
+    let exerciseNotesMap = JSON.parse(localStorage.getItem('overload_exercise_notes')) || {};
+    // Programdaki varsayılan hareketlerin gün değişikliklerini saklamak için
+    // Format: { "exId": "day-2" }
+    let baseExerciseDayMap = JSON.parse(localStorage.getItem('overload_base_exercise_day_map')) || {};
+
+    function getDayExercises(dayId) {
+      // 1. Programdaki temel hareketlerden bu güne ait olanları bul (veya bu güne taşınmış olanları)
+      const baseOverrides = JSON.parse(localStorage.getItem('overload_base_rest_overrides')) || {};
+      
+      let baseList = [];
+      WORKOUT_PROGRAM.forEach(d => {
+        d.exercises.forEach(e => {
+          const assignedDay = baseExerciseDayMap[e.id] || d.id;
+          if (assignedDay === dayId) {
+            baseList.push({
+              ...e,
+              originalDayId: d.id,
+              restSec: baseOverrides[e.id] !== undefined ? baseOverrides[e.id] : e.restSec
+            });
+          }
+        });
+      });
+
+      // 2. Özel eklenen hareketler
+      const customs = customExercises[dayId] || [];
+      let list = [...baseList, ...customs];
+
+      // Sıralama uygulanmışsa sıraya göre diz
+      if (exerciseOrderMap[dayId] && Array.isArray(exerciseOrderMap[dayId])) {
+        const order = exerciseOrderMap[dayId];
+        list.sort((a, b) => {
+          let ia = order.indexOf(a.id);
+          let ib = order.indexOf(b.id);
+          if (ia === -1) ia = 999;
+          if (ib === -1) ib = 999;
+          return ia - ib;
+        });
+      }
+      return list;
+    }
+
+    function moveExercise(dayId, exId, direction) {
+      const currentList = getDayExercises(dayId).map(e => e.id);
+      const idx = currentList.indexOf(exId);
+      if (idx === -1) return;
+      const targetIdx = idx + direction;
+      if (targetIdx < 0 || targetIdx >= currentList.length) return;
+
+      const temp = currentList[idx];
+      currentList[idx] = currentList[targetIdx];
+      currentList[targetIdx] = temp;
+
+      exerciseOrderMap[dayId] = currentList;
+      localStorage.setItem('overload_exercise_order_map', JSON.stringify(exerciseOrderMap));
+      renderCurrentDay();
+    }
+
+    // --- EGZERSİZİ BAŞKA GÜNE TAŞIMA FONKSİYONLARI ---
+    let movingExerciseContext = null;
+
+    function openMoveExerciseModal(exId, currentDayId) {
+      const ex = findExercise(exId);
+      if (!ex) return;
+      movingExerciseContext = { exId, currentDayId, exercise: ex };
+
+      const select = document.getElementById('move-target-day-select');
+      select.innerHTML = '';
+
+      WORKOUT_PROGRAM.forEach(day => {
+        if (!day.isRest) {
+          const opt = document.createElement('option');
+          opt.value = day.id;
+          opt.innerText = `${day.dayNumber}. Gün: ${day.title.split(':')[1]?.trim() || day.title}`;
+          if (day.id === currentDayId) {
+            opt.innerText += ' (Şu anki gün)';
+            opt.disabled = true;
+          }
+          select.appendChild(opt);
+        }
+      });
+
+      document.getElementById('move-day-info').innerText = `'${ex.name}' hareketini hangi güne taşımak istiyorsunuz?`;
+      document.getElementById('move-day-modal').classList.remove('hidden');
+    }
+
+    function closeMoveDayModal() {
+      document.getElementById('move-day-modal').classList.add('hidden');
+      movingExerciseContext = null;
+    }
+
+    function confirmMoveExerciseToDay() {
+      if (!movingExerciseContext) return;
+      const { exId, currentDayId, exercise } = movingExerciseContext;
+      const targetDayId = document.getElementById('move-target-day-select').value;
+      if (!targetDayId || targetDayId === currentDayId) {
+        closeMoveDayModal();
+        return;
+      }
+
+      // 1. Eğer özel hareketse customExercises haritasında taşı
+      if (exercise.isCustom) {
+        if (customExercises[currentDayId]) {
+          customExercises[currentDayId] = customExercises[currentDayId].filter(e => e.id !== exId);
+        }
+        if (!customExercises[targetDayId]) customExercises[targetDayId] = [];
+        customExercises[targetDayId].push(exercise);
+        localStorage.setItem('overload_custom_exercises', JSON.stringify(customExercises));
+      } else {
+        // Standart egzersizse baseExerciseDayMap'e kaydet
+        baseExerciseDayMap[exId] = targetDayId;
+        localStorage.setItem('overload_base_exercise_day_map', JSON.stringify(baseExerciseDayMap));
+      }
+
+      // Sıralama listelerinden temizle
+      if (exerciseOrderMap[currentDayId]) {
+        exerciseOrderMap[currentDayId] = exerciseOrderMap[currentDayId].filter(id => id !== exId);
+        localStorage.setItem('overload_exercise_order_map', JSON.stringify(exerciseOrderMap));
+      }
+
+      closeMoveDayModal();
+      renderCurrentDay();
+      if (document.getElementById('view-progress').classList.contains('active')) {
+        renderDayProgressStats();
+      }
+    }
+
+    function saveExerciseNote(exId, noteText) {
+      exerciseNotesMap[exId] = noteText;
+      localStorage.setItem('overload_exercise_notes', JSON.stringify(exerciseNotesMap));
+    }
+
+    function findExercise(exId) {
+      for (const day of WORKOUT_PROGRAM) {
+        const exercises = getDayExercises(day.id);
+        const found = exercises.find(e => e.id === exId);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    // --- 3. START DATE & AUTOMATIC 7-DAY WEEK SYSTEM ---
+    let startDateStr = localStorage.getItem('overload_start_date');
+    if (!startDateStr) {
+      const todayIso = new Date().toISOString().slice(0, 10);
+      startDateStr = todayIso;
+      localStorage.setItem('overload_start_date', todayIso);
+    }
+
+    function parseLocalDate(str) {
+      if (!str) return new Date();
+      const parts = str.split('-');
+      return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), 0, 0, 0, 0);
+    }
+
+    function addDays(d, days) {
+      const res = new Date(d);
+      res.setDate(res.getDate() + days);
+      return res;
+    }
+
+    function calculateWeekFromDate() {
+      const start = parseLocalDate(startDateStr);
+      const now = new Date();
+      now.setHours(0,0,0,0);
+      const diffTime = now.getTime() - start.getTime();
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays < 0) {
+        return { autoWeek: 1, daysPassed: diffDays, status: 'upcoming' };
+      }
+      const weekNum = Math.floor(diffDays / 7) + 1;
+      return { autoWeek: weekNum, daysPassed: diffDays, status: 'active' };
+    }
+
+    let { autoWeek, daysPassed, status: weekStatus } = calculateWeekFromDate();
+    let viewingWeek = parseInt(localStorage.getItem('overload_viewing_week')) || autoWeek;
+    let selectedDayIndex = parseInt(localStorage.getItem('overload_selected_day')) || 0;
+    let statsSelectedDayIndex = 0;
+    
+    // Logs: { "week_1": { "ex_id": [ {weight, reps, done}, ... ] } }
+    let workoutLogs = JSON.parse(localStorage.getItem('overload_workout_logs')) || {};
+
+    // --- 4. RELIABLE AUDIO ALARM ENGINE ---
+    let audioUnlocked = false;
+    function unlockAudioContext() {
+      if (audioUnlocked) return;
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!window.gymAudioCtx && AC) {
+          window.gymAudioCtx = new AC();
+        }
+        if (window.gymAudioCtx && window.gymAudioCtx.state === 'suspended') {
+          window.gymAudioCtx.resume();
+        }
+        audioUnlocked = true;
+      } catch(e) {}
+    }
+
+    // Wake up Web Audio once silently on first user interaction (NO audible sound)
+    document.addEventListener('touchstart', unlockAudioContext, { once: true, passive: true });
+    document.addEventListener('click', unlockAudioContext, { once: true, passive: true });
+
+    function playBeep() {
+      // 1. Visual Pulse & Shake on the timer bar
+      const timerBar = document.getElementById('rest-timer-bar');
+      if (timerBar) {
+        timerBar.classList.add('alarm-pulse');
+        setTimeout(() => timerBar.classList.remove('alarm-pulse'), 3000);
+      }
+
+      // 2. Play Single Clean Chime (alarm.wav)
+      const audioEl = document.getElementById('alarm-audio');
+      if (audioEl) {
+        try {
+          audioEl.currentTime = 0;
+          audioEl.play().catch(() => {});
+        } catch(e) {}
+      }
+
+      // 3. Vibration (supported browsers)
+      try {
+        if ('vibrate' in navigator) navigator.vibrate([200, 100, 200, 100, 400]);
+      } catch (e) {}
+    }
+
+    function testAlarmAndVibrate() {
+      unlockAudioContext();
+      playBeep();
+      const timerBar = document.getElementById('rest-timer-bar');
+      if (timerBar) {
+        timerBar.classList.remove('hidden');
+        document.getElementById('timer-display').innerText = '00:00 - Test!';
+        setTimeout(() => {
+          if (!timerEndTime) timerBar.classList.add('hidden');
+        }, 2500);
+      }
+    }
+
+    // --- 5. INITIALIZATION ---
+    function init() {
+      const options = { weekday: 'long', day: 'numeric', month: 'long' };
+      document.getElementById('current-date').innerText = new Date().toLocaleDateString('tr-TR', options);
+      
+      // Eğer kullanıcı doğrudan bir gün seçmemişse, mevcut haftadaki bugünkü güne odaklan
+      if (localStorage.getItem('overload_selected_day') === null) {
+        if (daysPassed >= 0) {
+          selectedDayIndex = daysPassed % 7;
+        } else {
+          selectedDayIndex = 0;
+        }
+      }
+
+      updateHeaderDateDisplay();
+      populateWeekDropdown();
+      renderDayScroller();
+      renderCurrentDay();
+      renderStatsDaySelector();
+
+      if (!localStorage.getItem('overload_start_date_confirmed')) {
+        openDateModal();
+      }
+    }
+
+    function formatDateFriendly(dateStr) {
+      if (!dateStr) return '';
+      const d = parseLocalDate(dateStr);
+      return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
+    }
+
+    function getDayDate(weekNum, dayIndex) {
+      const start = parseLocalDate(startDateStr);
+      const totalDays = (weekNum - 1) * 7 + dayIndex;
+      return addDays(start, totalDays);
+    }
+
+    function getDayDateString(weekNum, dayIndex) {
+      const d = getDayDate(weekNum, dayIndex);
+      return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
+    }
+
+    function updateHeaderDateDisplay() {
+      const { autoWeek: currentAuto, daysPassed: currentDays } = calculateWeekFromDate();
+      autoWeek = currentAuto;
+      daysPassed = currentDays;
+
+      const dateText = formatDateFriendly(startDateStr);
+      document.getElementById('header-start-date-text').innerText = dateText;
+      
+      let badgeText = '';
+      if (currentDays < 0) {
+        badgeText = `(${Math.abs(currentDays)} gün sonra başlayacak)`;
+      } else {
+        const dayInWeek = (currentDays % 7) + 1;
+        badgeText = `(${autoWeek}. Hafta, ${dayInWeek}. Gün)`;
+      }
+      document.getElementById('header-week-calc-badge').innerText = badgeText;
+
+      document.getElementById('start-date-calc-info').innerText = 
+        `Seçili Başlangıç: ${startDateStr}. Şu an ${autoWeek}. haftadasınız (${currentDays >= 0 ? currentDays + ' gün geçti' : Math.abs(currentDays) + ' gün var'}). 7 gün dolunca otomatik sonraki haftaya geçer.`;
+    }
+
+    // --- 6. POPULATE WEEKS DROPDOWN ---
+    function populateWeekDropdown() {
+      const select = document.getElementById('header-week-select');
+      select.innerHTML = '';
+
+      let maxWeek = autoWeek;
+      Object.keys(workoutLogs).forEach(k => {
+        if (k.startsWith('week_')) {
+          const w = parseInt(k.replace('week_', ''));
+          if (w > maxWeek) maxWeek = w;
+        }
+      });
+
+      const start = parseLocalDate(startDateStr);
+
+      for (let w = 1; w <= maxWeek; w++) {
+        const opt = document.createElement('option');
+        opt.value = w;
+
+        const wStart = addDays(start, (w - 1) * 7);
+        const wEnd = addDays(wStart, 6);
+        const rangeStr = `${wStart.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })} - ${wEnd.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })}`;
+
+        let label = `${w}. Hafta (${rangeStr})`;
+        if (w === autoWeek) {
+          label += ' ★ Aktif';
+        } else if (w < autoWeek) {
+          label += ' ✓';
+        }
+        opt.innerText = label;
+        if (w === viewingWeek) {
+          opt.selected = true;
+        }
+        select.appendChild(opt);
+      }
+
+      const addOpt = document.createElement('option');
+      addOpt.value = 'add_new';
+      addOpt.innerText = '➕ Yeni Hafta Aç...';
+      select.appendChild(addOpt);
+    }
+
+    function onWeekDropdownChange(val) {
+      if (val === 'add_new') {
+        const nextW = Math.max(autoWeek, viewingWeek) + 1;
+        viewingWeek = nextW;
+        selectedDayIndex = 0; // Yeni haftaya geçildiğinde 1. günden başla
+        localStorage.setItem('overload_selected_day', 0);
+        populateWeekDropdown();
+        renderDayScroller();
+        renderCurrentDay();
+        if (document.getElementById('view-progress').classList.contains('active')) {
+          renderDayProgressStats();
+        }
+        return;
+      }
+
+      viewingWeek = parseInt(val);
+      selectedDayIndex = 0; // Hafta değiştirildiğinde doğrudan 1. günden başla
+      localStorage.setItem('overload_selected_day', 0);
+      localStorage.setItem('overload_viewing_week', viewingWeek);
+      renderDayScroller();
+      renderCurrentDay();
+      if (document.getElementById('view-progress').classList.contains('active')) {
+        renderDayProgressStats();
+      }
+    }
+
+    // --- 7. START DATE MODAL ---
+    function openDateModal() {
+      document.getElementById('modal-date-input').value = startDateStr;
+      document.getElementById('date-modal').classList.remove('hidden');
+    }
+
+    function closeDateModal() {
+      document.getElementById('date-modal').classList.add('hidden');
+    }
+
+    function saveStartDateFromModal() {
+      const selected = document.getElementById('modal-date-input').value;
+      if (!selected) return;
+
+      startDateStr = selected;
+      localStorage.setItem('overload_start_date', startDateStr);
+      localStorage.setItem('overload_start_date_confirmed', 'true');
+
+      const { autoWeek: newAuto } = calculateWeekFromDate();
+      autoWeek = newAuto;
+      viewingWeek = newAuto;
+      localStorage.setItem('overload_viewing_week', viewingWeek);
+
+      closeDateModal();
+      updateHeaderDateDisplay();
+      populateWeekDropdown();
+      renderCurrentDay();
+      if (document.getElementById('view-progress').classList.contains('active')) {
+        renderDayProgressStats();
+      }
+    }
+
+    // --- 8. CUSTOM EXERCISE MODAL LOGIC ---
+    let activeCustomType = 'reps';
+
+    function setCustomType(type) {
+      activeCustomType = type;
+      if (type === 'reps') {
+        document.getElementById('type-weight-btn').classList.add('active');
+        document.getElementById('type-time-btn').classList.remove('active');
+      } else {
+        document.getElementById('type-time-btn').classList.add('active');
+        document.getElementById('type-weight-btn').classList.remove('active');
+      }
+    }
+
+    function openCustomExerciseModal() {
+      const day = WORKOUT_PROGRAM[selectedDayIndex];
+      document.getElementById('modal-day-label').innerText = `${day.title} programına eklenecek.`;
+      document.getElementById('custom-name-input').value = '';
+      setCustomType('reps');
+      document.getElementById('custom-sets-input').value = '3';
+      document.getElementById('custom-rest-input').value = '60';
+      document.getElementById('custom-ex-modal').classList.remove('hidden');
+      document.getElementById('custom-name-input').focus();
+    }
+
+    function closeCustomExerciseModal() {
+      document.getElementById('custom-ex-modal').classList.add('hidden');
+    }
+
+    function saveCustomExercise() {
+      const name = document.getElementById('custom-name-input').value.trim();
+      if (!name) {
+        alert('Lütfen bir hareket adı yazın! (Örn: Plank)');
+        return;
+      }
+
+      const sets = parseInt(document.getElementById('custom-sets-input').value) || 3;
+      const rest = parseInt(document.getElementById('custom-rest-input').value) || 60;
+      const day = WORKOUT_PROGRAM[selectedDayIndex];
+
+      const newEx = {
+        id: `custom_${Date.now()}`,
+        name: name,
+        targetSets: sets,
+        targetReps: activeCustomType === 'time' ? 'Süre (sn/dk)' : '8 - 12',
+        restSec: rest,
+        type: activeCustomType,
+        isCustom: true
+      };
+
+      if (!customExercises[day.id]) customExercises[day.id] = [];
+      customExercises[day.id].push(newEx);
+      localStorage.setItem('overload_custom_exercises', JSON.stringify(customExercises));
+
+      closeCustomExerciseModal();
+      renderCurrentDay();
+      if (document.getElementById('view-progress').classList.contains('active')) {
+        renderDayProgressStats();
+      }
+    }
+
+    function deleteCustomExercise(exId, dayId) {
+      if (confirm('Bu ekstra hareketi programdan kaldırmak istediğinize emin misiniz?')) {
+        if (customExercises[dayId]) {
+          customExercises[dayId] = customExercises[dayId].filter(e => e.id !== exId);
+          localStorage.setItem('overload_custom_exercises', JSON.stringify(customExercises));
+          renderCurrentDay();
+          if (document.getElementById('view-progress').classList.contains('active')) {
+            renderDayProgressStats();
+          }
+        }
+      }
+    }
+
+    function promptChangeRestTime(exId, dayId, currentSec) {
+      const ex = findExercise(exId);
+      const name = ex ? ex.name : 'Hareket';
+      const input = prompt(`'${name}' için dinlenme süresini girin (saniye cinsinden, örn: 45, 60, 90, 120):`, currentSec);
+      const parsed = parseInt(input);
+      if (parsed && parsed > 0) {
+        if (customExercises[dayId]) {
+          const customEx = customExercises[dayId].find(e => e.id === exId);
+          if (customEx) {
+            customEx.restSec = parsed;
+            localStorage.setItem('overload_custom_exercises', JSON.stringify(customExercises));
+          }
+        }
+        let baseOverrides = JSON.parse(localStorage.getItem('overload_base_rest_overrides')) || {};
+        baseOverrides[exId] = parsed;
+        localStorage.setItem('overload_base_rest_overrides', JSON.stringify(baseOverrides));
+
+        renderCurrentDay();
+      }
+    }
+
+    // --- 9. RENDER DAY PILLS (WORKOUT SCREEN) ---
+    function renderDayScroller() {
+      const scroller = document.getElementById('day-scroller');
+      scroller.innerHTML = '';
+
+      WORKOUT_PROGRAM.forEach((day, index) => {
+        const pill = document.createElement('div');
+        pill.className = `day-pill ${index === selectedDayIndex ? 'active' : ''}`;
+        pill.onclick = () => selectDay(index);
+        
+        let shortName = day.isRest ? 'DİNLENME' : day.title.split(':')[1]?.trim() || day.title;
+        shortName = shortName.split('(')[0].trim();
+        const dateStr = getDayDateString(viewingWeek, index);
+
+        pill.innerHTML = `
+          <span class="day-title">${day.dayNumber}. Gün</span>
+          <span class="day-name">${shortName}</span>
+          <span class="day-date">${dateStr}</span>
+        `;
+        scroller.appendChild(pill);
+      });
+    }
+
+    function selectDay(index) {
+      selectedDayIndex = index;
+      localStorage.setItem('overload_selected_day', index);
+      renderDayScroller();
+      renderCurrentDay();
+    }
+
+    // --- 10. RENDER CURRENT WORKOUT DAY ---
+    function renderCurrentDay() {
+      const day = WORKOUT_PROGRAM[selectedDayIndex];
+      const targetDate = getDayDate(viewingWeek, selectedDayIndex);
+      const dateOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      const friendlyDateStr = targetDate.toLocaleDateString('tr-TR', dateOptions);
+
+      document.getElementById('day-title').innerText = `${day.title} • ${friendlyDateStr}`;
+      document.getElementById('day-subtitle').innerText = `${viewingWeek}. Hafta • ${day.subtitle}`;
+
+      const container = document.getElementById('exercises-container');
+      const addTrigger = document.getElementById('add-custom-ex-trigger');
+      container.innerHTML = '';
+
+      if (day.isRest) {
+        addTrigger.style.display = 'none';
+        container.innerHTML = `
+          <div class="rest-day-card">
+            <div class="rest-day-icon">😴</div>
+            <h3>Dinlenme ve Toparlanma Günü</h3>
+            <p>Bugün kas lifleriniz onarılıyor ve güçleniyorsunuz. İyi beslenin, protein alın ve uykunuzu tam alın.</p>
+          </div>
+        `;
+        return;
+      }
+
+      addTrigger.style.display = 'block';
+
+      const currentWeekKey = `week_${viewingWeek}`;
+      const prevWeekKey = `week_${viewingWeek - 1}`;
+      
+      const currentLogs = workoutLogs[currentWeekKey] || {};
+      const prevLogs = workoutLogs[prevWeekKey] || {};
+
+      const exercises = getDayExercises(day.id);
+
+      exercises.forEach((ex) => {
+        const exCard = document.createElement('div');
+        exCard.className = 'exercise-card';
+        exCard.id = `card-${ex.id}`;
+
+        const isTimeBased = (ex.type === 'time');
+        const exLogsCurrent = currentLogs[ex.id] || [];
+        const exLogsPrev = prevLogs[ex.id] || [];
+
+        const setRowsCount = Math.max(ex.targetSets, exLogsCurrent.length);
+
+        let rowsHtml = '';
+        for (let s = 0; s < setRowsCount; s++) {
+          const setIndex = s + 1;
+          const currSet = exLogsCurrent[s] || { weight: '', reps: '', done: false };
+          const prevSet = exLogsPrev[s];
+
+          let prevText = '-';
+          if (prevSet && (prevSet.weight || prevSet.reps)) {
+            if (isTimeBased) {
+              prevText = `${prevSet.reps || ''} ${prevSet.weight ? '(' + prevSet.weight + 'kg)' : ''}`.trim();
+            } else {
+              prevText = `${prevSet.weight} kg × ${prevSet.reps}`;
+            }
+          }
+
+          const isDone = currSet.done;
+          const col1Placeholder = isTimeBased ? '+kg' : 'kg';
+          const col2Placeholder = isTimeBased ? 'sn / dk' : (ex.targetReps || '8 - 12');
+
+          rowsHtml += `
+            <div class="set-row ${isDone ? 'completed' : ''}" id="row-${ex.id}-${s}">
+              <div class="set-num">${setIndex}</div>
+              
+              <!-- Geçen Hafta Sütunu -->
+              <div class="prev-stats" onclick="copyPrevStats('${ex.id}', ${s}, '${prevSet ? prevSet.weight : ''}', '${prevSet ? prevSet.reps : ''}')" title="Bu değeri kopyalamak için dokunun">
+                <span>${prevText}</span>
+                ${prevSet && (prevSet.weight || prevSet.reps) ? '<span class="copy-icon">📋</span>' : ''}
+              </div>
+
+              <!-- Kg / Ek Ağırlık Girişi -->
+              <div>
+                <input type="number" inputmode="decimal" class="input-box" id="weight-${ex.id}-${s}" 
+                  placeholder="${col1Placeholder}" value="${currSet.weight || ''}" 
+                  min="0" step="any"
+                  onchange="saveSetData('${ex.id}', ${s})" 
+                  oninput="checkOverloadHighlight('${ex.id}', ${s})">
+              </div>
+
+              <!-- Tekrar / Süre (sn/dk) Girişi: Hedef tekrar soluk placeholder olarak görünür -->
+              <div>
+                <input type="number" inputmode="numeric" class="input-box" id="reps-${ex.id}-${s}" 
+                  placeholder="${col2Placeholder}" value="${currSet.reps || ''}" 
+                  min="0" step="any"
+                  title="Hedef: ${ex.targetReps || ''}"
+                  onchange="saveSetData('${ex.id}', ${s})" 
+                  oninput="checkOverloadHighlight('${ex.id}', ${s})">
+              </div>
+
+              <!-- RPE Zorluk Derecesi (1-10) -->
+              <div>
+                <select class="input-box" id="rpe-${ex.id}-${s}" style="padding:0 2px; font-size:11px;" onchange="saveSetData('${ex.id}', ${s})">
+                  <option value="" ${!currSet.rpe ? 'selected' : ''}>-</option>
+                  <option value="6" ${currSet.rpe == '6' ? 'selected' : ''}>6</option>
+                  <option value="7" ${currSet.rpe == '7' ? 'selected' : ''}>7</option>
+                  <option value="7.5" ${currSet.rpe == '7.5' ? 'selected' : ''}>7.5</option>
+                  <option value="8" ${currSet.rpe == '8' ? 'selected' : ''}>8</option>
+                  <option value="8.5" ${currSet.rpe == '8.5' ? 'selected' : ''}>8.5</option>
+                  <option value="9" ${currSet.rpe == '9' ? 'selected' : ''}>9</option>
+                  <option value="9.5" ${currSet.rpe == '9.5' ? 'selected' : ''}>9.5</option>
+                  <option value="10" ${currSet.rpe == '10' ? 'selected' : ''}>10 (Tükeniş)</option>
+                </select>
+              </div>
+
+              <!-- Tamamlandı Butonu -->
+              <div>
+                <button class="check-btn ${isDone ? 'checked' : ''}" id="btn-${ex.id}-${s}" 
+                  onclick="toggleSetComplete('${ex.id}', ${s}, ${ex.restSec})">
+                  ${isDone ? '✓' : '○'}
+                </button>
+              </div>
+
+              <!-- SETİ SİLME BUTONU -->
+              <div>
+                <button class="delete-set-btn" onclick="deleteSet('${ex.id}', ${s})" title="Seti Sil">✕</button>
+              </div>
+            </div>
+          `;
+        }
+
+        const deleteExBtn = ex.isCustom 
+          ? `<button class="remove-ex-btn" onclick="deleteCustomExercise('${ex.id}', '${day.id}')" title="Hareketi Kaldır">🗑️ Kaldır</button>`
+          : '';
+
+        const moveDayBtn = `<button class="move-day-btn" onclick="openMoveExerciseModal('${ex.id}', '${day.id}')" title="Günü Değiştir">📅 Günü Değiştir</button>`;
+
+        const typeBadge = isTimeBased 
+          ? `<span class="badge-time">⏱️ Süre Bazlı</span>` 
+          : `<span class="badge-target">${ex.targetSets} set × ${ex.targetReps}</span>`;
+
+        const currentNote = exerciseNotesMap[ex.id] || '';
+
+        exCard.innerHTML = `
+          <div class="exercise-header">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div class="exercise-title">${ex.name}</div>
+                <!-- Egzersiz Sırasını Değiştirme Butonları -->
+                <div style="display:flex; gap:3px;">
+                  <button class="ex-order-btn" onclick="moveExercise('${day.id}', '${ex.id}', -1)" title="Yukarı Taşı">▲</button>
+                  <button class="ex-order-btn" onclick="moveExercise('${day.id}', '${ex.id}', 1)" title="Aşağı Taşı">▼</button>
+                </div>
+              </div>
+              <div class="exercise-meta">
+                ${typeBadge}
+                <span class="badge-rest" onclick="promptChangeRestTime('${ex.id}', '${day.id}', ${ex.restSec})" title="Dinlenme süresini değiştirmek için dokunun">⏱️ ${ex.restSec} sn ✏️</span>
+              </div>
+            </div>
+            <div class="ex-header-right">
+              ${moveDayBtn}
+              ${deleteExBtn}
+            </div>
+          </div>
+
+          <div class="sets-table">
+            <div class="set-row-header">
+              <div>SET</div>
+              <div>GEÇEN HAFTA</div>
+              <div>${isTimeBased ? 'EK KG' : 'KG'}</div>
+              <div>${isTimeBased ? 'SÜRE (SN)' : 'TEKRAR'}</div>
+              <div>RPE</div>
+              <div>✓</div>
+              <div>SİL</div>
+            </div>
+            ${rowsHtml}
+          </div>
+
+          <!-- Egzersiz Not Alanı -->
+          <div style="padding: 0 12px 8px;">
+            <input type="text" class="ex-note-input" id="note-${ex.id}" 
+              placeholder="📝 Bu hareket için not ekle (örn: sehpa açısı 30°, tutuş geniş vb.)..." 
+              value="${currentNote.replace(/"/g, '&quot;')}" 
+              onchange="saveExerciseNote('${ex.id}', this.value)">
+          </div>
+
+          <div class="exercise-actions">
+            <button class="add-set-btn" onclick="addExtraSet('${ex.id}')">
+              <span>+</span> Ekstra Set Ekle
+            </button>
+            <div id="overload-badge-${ex.id}"></div>
+          </div>
+        `;
+
+        container.appendChild(exCard);
+        updateOverloadBadge(ex.id);
+      });
+    }
+
+    // --- 11. DELETE SET ---
+    function deleteSet(exId, setIndex) {
+      const currentWeekKey = `week_${viewingWeek}`;
+      if (!workoutLogs[currentWeekKey] || !workoutLogs[currentWeekKey][exId]) {
+        const ex = findExercise(exId);
+        workoutLogs[currentWeekKey] = workoutLogs[currentWeekKey] || {};
+        workoutLogs[currentWeekKey][exId] = Array.from({ length: ex ? ex.targetSets : 3 }, () => ({ weight: '', reps: '', done: false }));
+      }
+
+      const sets = workoutLogs[currentWeekKey][exId];
+      if (sets.length <= 1) {
+        alert('En az 1 set kalmalıdır!');
+        return;
+      }
+
+      sets.splice(setIndex, 1);
+      localStorage.setItem('overload_workout_logs', JSON.stringify(workoutLogs));
+      renderCurrentDay();
+    }
+
+    // --- 12. PROGRESSIVE OVERLOAD CHECK & BADGES ---
+    function checkOverloadHighlight(exId, setIndex) {
+      saveSetData(exId, setIndex);
+      updateOverloadBadge(exId);
+    }
+
+    function updateOverloadBadge(exId) {
+      const currentWeekKey = `week_${viewingWeek}`;
+      const prevWeekKey = `week_${viewingWeek - 1}`;
+      
+      const ex = findExercise(exId);
+      const isTimeBased = ex && ex.type === 'time';
+
+      const exLogsCurrent = (workoutLogs[currentWeekKey] && workoutLogs[currentWeekKey][exId]) || [];
+      const exLogsPrev = (workoutLogs[prevWeekKey] && workoutLogs[prevWeekKey][exId]) || [];
+
+      const badgeContainer = document.getElementById(`overload-badge-${exId}`);
+      if (!badgeContainer) return;
+
+      if (isTimeBased) {
+        // Parse seconds/duration from reps input
+        let maxCurrentSec = 0;
+        let maxPrevSec = 0;
+
+        exLogsCurrent.forEach(s => {
+          const sec = parseDurationToSeconds(s.reps);
+          if (sec > maxCurrentSec) maxCurrentSec = sec;
+        });
+
+        exLogsPrev.forEach(s => {
+          const sec = parseDurationToSeconds(s.reps);
+          if (sec > maxPrevSec) maxPrevSec = sec;
+        });
+
+        if (maxCurrentSec > 0 && maxPrevSec > 0) {
+          const diff = maxCurrentSec - maxPrevSec;
+          if (diff > 0) {
+            badgeContainer.innerHTML = `<span class="progressive-badge gain">🚀 +${diff} sn Süre Artışı!</span>`;
+            return;
+          } else if (diff === 0) {
+            badgeContainer.innerHTML = `<span class="progressive-badge" style="background: rgba(10,132,255,0.15); color: var(--accent-blue);">⚖️ Süre Korundu</span>`;
+            return;
+          }
+        }
+      } else {
+        let maxCurrent = 0;
+        let maxPrev = 0;
+
+        exLogsCurrent.forEach(s => {
+          const w = parseFloat(s.weight);
+          if (w > maxCurrent) maxCurrent = w;
+        });
+
+        exLogsPrev.forEach(s => {
+          const w = parseFloat(s.weight);
+          if (w > maxPrev) maxPrev = w;
+        });
+
+        if (maxCurrent > 0 && maxPrev > 0) {
+          const diff = maxCurrent - maxPrev;
+          if (diff > 0) {
+            badgeContainer.innerHTML = `<span class="progressive-badge gain">🚀 +${diff.toFixed(1)} kg Artış!</span>`;
+            return;
+          } else if (diff === 0) {
+            badgeContainer.innerHTML = `<span class="progressive-badge" style="background: rgba(10,132,255,0.15); color: var(--accent-blue);">⚖️ Ağırlık Korundu</span>`;
+            return;
+          }
+        }
+      }
+      badgeContainer.innerHTML = '';
+    }
+
+    function parseDurationToSeconds(str) {
+      if (!str) return 0;
+      const s = String(str).toLowerCase().trim();
+      if (s.includes('dk') || s.includes('m')) {
+        const val = parseFloat(s) || 0;
+        return val * 60;
+      }
+      return parseFloat(s) || 0;
+    }
+
+    // --- 13. COPY PREVIOUS STATS ---
+    function copyPrevStats(exId, setIndex, prevWeight, prevReps) {
+      if (!prevWeight && !prevReps) return;
+      const weightInput = document.getElementById(`weight-${exId}-${setIndex}`);
+      const repsInput = document.getElementById(`reps-${exId}-${setIndex}`);
+      if (weightInput && repsInput) {
+        weightInput.value = prevWeight;
+        repsInput.value = prevReps;
+        saveSetData(exId, setIndex);
+        updateOverloadBadge(exId);
+      }
+    }
+
+    // --- 14. SAVE SET DATA ---
+    function saveSetData(exId, setIndex) {
+      const currentWeekKey = `week_${viewingWeek}`;
+      if (!workoutLogs[currentWeekKey]) workoutLogs[currentWeekKey] = {};
+      if (!workoutLogs[currentWeekKey][exId]) workoutLogs[currentWeekKey][exId] = [];
+
+      const weightVal = document.getElementById(`weight-${exId}-${setIndex}`)?.value || '';
+      const repsVal = document.getElementById(`reps-${exId}-${setIndex}`)?.value || '';
+      const rpeVal = document.getElementById(`rpe-${exId}-${setIndex}`)?.value || '';
+      const btn = document.getElementById(`btn-${exId}-${setIndex}`);
+      const isDone = btn ? btn.classList.contains('checked') : false;
+
+      workoutLogs[currentWeekKey][exId][setIndex] = {
+        weight: weightVal,
+        reps: repsVal,
+        rpe: rpeVal,
+        done: isDone
+      };
+
+      localStorage.setItem('overload_workout_logs', JSON.stringify(workoutLogs));
+      populateWeekDropdown();
+    }
+
+    // --- 15. TOGGLE COMPLETE & TRIGGER TIMER ---
+    function toggleSetComplete(exId, setIndex, restSec) {
+      const btn = document.getElementById(`btn-${exId}-${setIndex}`);
+      const row = document.getElementById(`row-${exId}-${setIndex}`);
+      if (!btn) return;
+
+      const willBeDone = !btn.classList.contains('checked');
+
+      // 1) 1. set bitmeden 2. sete onay verilemesin (sıralı onay)
+      if (willBeDone && setIndex > 0) {
+        const prevBtn = document.getElementById(`btn-${exId}-${setIndex - 1}`);
+        if (prevBtn && !prevBtn.classList.contains('checked')) {
+          prevBtn.style.transition = 'box-shadow 0.15s';
+          prevBtn.style.boxShadow = '0 0 0 3px rgba(255,69,58,0.85)';
+          setTimeout(() => { prevBtn.style.boxShadow = ''; }, 700);
+          return;
+        }
+      }
+
+      // 2) Kg ve tekrar girilmeden onay verilmesin (Vücut ağırlığı için 0 kg girilebilir)
+      if (willBeDone) {
+        const weightVal = document.getElementById(`weight-${exId}-${setIndex}`)?.value?.trim();
+        const repsVal   = document.getElementById(`reps-${exId}-${setIndex}`)?.value?.trim();
+
+        if (weightVal === '' || isNaN(Number(weightVal)) || Number(weightVal) < 0) {
+          const wInput = document.getElementById(`weight-${exId}-${setIndex}`);
+          if (wInput) {
+            wInput.style.borderColor = 'var(--accent-red)';
+            wInput.focus();
+            setTimeout(() => { wInput.style.borderColor = ''; }, 800);
+          }
+          return;
+        }
+        if (repsVal === '' || isNaN(Number(repsVal)) || Number(repsVal) <= 0) {
+          const rInput = document.getElementById(`reps-${exId}-${setIndex}`);
+          if (rInput) {
+            rInput.style.borderColor = 'var(--accent-red)';
+            rInput.focus();
+            setTimeout(() => { rInput.style.borderColor = ''; }, 800);
+          }
+          return;
+        }
+
+        btn.classList.add('checked');
+        btn.innerHTML = '✓';
+        row.classList.add('completed');
+        startRestTimer(restSec || 60);
+      } else {
+        btn.classList.remove('checked');
+        btn.innerHTML = '○';
+        row.classList.remove('completed');
+      }
+
+      saveSetData(exId, setIndex);
+    }
+
+    // --- 16. ADD EXTRA SET ---
+    function addExtraSet(exId) {
+      const currentWeekKey = `week_${viewingWeek}`;
+      if (!workoutLogs[currentWeekKey]) workoutLogs[currentWeekKey] = {};
+      if (!workoutLogs[currentWeekKey][exId]) {
+        const ex = findExercise(exId);
+        workoutLogs[currentWeekKey][exId] = Array.from({ length: ex ? ex.targetSets : 3 }, () => ({ weight: '', reps: '', done: false }));
+      }
+      
+      workoutLogs[currentWeekKey][exId].push({ weight: '', reps: '', done: false });
+      localStorage.setItem('overload_workout_logs', JSON.stringify(workoutLogs));
+      renderCurrentDay();
+    }
+
+    // --- 17. REST TIMER LOGIC (REAL-TIME TIMESTAMP BASED) ---
+    let timerInterval = null;
+    let timerEndTime = parseInt(localStorage.getItem('overload_timer_end')) || 0;
+
+    function startRestTimer(seconds) {
+      clearInterval(timerInterval);
+      timerEndTime = Date.now() + (seconds * 1000);
+      localStorage.setItem('overload_timer_end', timerEndTime);
+      
+      document.getElementById('rest-timer-bar').classList.remove('hidden');
+      updateTimerDisplay();
+
+      timerInterval = setInterval(tickTimer, 500);
+    }
+
+    function tickTimer() {
+      if (!timerEndTime) return;
+      const remainingMs = timerEndTime - Date.now();
+      const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));
+
+      if (remainingMs <= 0) {
+        clearInterval(timerInterval);
+        timerEndTime = 0;
+        localStorage.removeItem('overload_timer_end');
+        
+        // Play loud chime & vibration
+        playBeep();
+
+        document.getElementById('timer-display').innerText = '00:00 - Hazırsın!';
+        setTimeout(() => {
+          if (!timerEndTime) {
+            document.getElementById('rest-timer-bar').classList.add('hidden');
+          }
+        }, 3500);
+        return;
+      }
+
+      updateTimerDisplay(remainingSec);
+    }
+
+    function updateTimerDisplay(sec) {
+      if (sec === undefined) {
+        sec = Math.max(0, Math.ceil((timerEndTime - Date.now()) / 1000));
+      }
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      document.getElementById('timer-display').innerText = 
+        `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function adjustTimer(secs) {
+      if (!timerEndTime) return;
+      timerEndTime += (secs * 1000);
+      localStorage.setItem('overload_timer_end', timerEndTime);
+      updateTimerDisplay();
+    }
+
+    function skipTimer() {
+      clearInterval(timerInterval);
+      timerEndTime = 0;
+      localStorage.removeItem('overload_timer_end');
+      document.getElementById('rest-timer-bar').classList.add('hidden');
+    }
+
+    // Instantly sync timer when app returns from background (iOS sleep/lock screen fix)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && timerEndTime > 0) {
+        tickTimer();
+      }
+    });
+    window.addEventListener('focus', () => {
+      if (timerEndTime > 0) {
+        tickTimer();
+      }
+    });
+
+    // Resume timer if active on page load
+    if (timerEndTime > Date.now()) {
+      document.getElementById('rest-timer-bar').classList.remove('hidden');
+      updateTimerDisplay();
+      timerInterval = setInterval(tickTimer, 500);
+    } else {
+      localStorage.removeItem('overload_timer_end');
+    }
+
+    function finishWorkout() {
+      alert(`Tebrikler! ${WORKOUT_PROGRAM[selectedDayIndex].title} antrenmanınız kaydedildi.`);
+    }
+
+    // --- 18. STATS VIEW: TÜM HAREKETLER, GRAFİKLER & KARŞILAŞTIRMALAR ---
+    let selectedChartExerciseId = '';
+    let selectedChartMetric = 'totweight'; // 'totweight', 'weight', 'volume', 'reps', 'rpe'
+
+    function setChartMetric(metric) {
+      selectedChartMetric = metric;
+      renderAnalyticsChart();
+    }
+
+    function onChartExerciseChange(exId) {
+      selectedChartExerciseId = exId;
+      renderAnalyticsChart();
+    }
+
+    function renderAnalyticsChart() {
+      const chartWrap = document.getElementById('analytics-chart-svg-wrap');
+      if (!chartWrap) return;
+
+      const exercises = [];
+      WORKOUT_PROGRAM.forEach(day => {
+        if (!day.isRest) {
+          const list = getDayExercises(day.id);
+          list.forEach(e => {
+            if (!exercises.some(x => x.id === e.id)) {
+              exercises.push(e);
+            }
+          });
+        }
+      });
+
+      if (exercises.length === 0) {
+        chartWrap.innerHTML = '<p style="text-align:center; padding:30px 10px; color:var(--text-muted); font-size:12px;">Henüz egzersiz bulunmuyor.</p>';
+        return;
+      }
+
+      if (!selectedChartExerciseId || !exercises.some(e => e.id === selectedChartExerciseId)) {
+        selectedChartExerciseId = exercises[0].id;
+      }
+
+      const selectEl = document.getElementById('analytics-chart-exercise-select');
+      if (selectEl) {
+        selectEl.innerHTML = '';
+        exercises.forEach(e => {
+          const opt = document.createElement('option');
+          opt.value = e.id;
+          opt.innerText = e.name;
+          if (e.id === selectedChartExerciseId) opt.selected = true;
+          selectEl.appendChild(opt);
+        });
+      }
+
+      // Aktif metric chip stili güncelle
+      ['totweight', 'weight', 'volume', 'reps', 'rpe'].forEach(m => {
+        const chip = document.getElementById(`metric-chip-${m}`);
+        if (chip) {
+          if (m === selectedChartMetric) chip.classList.add('active');
+          else chip.classList.remove('active');
+        }
+      });
+
+      // Haftalık verileri topla
+      let maxWeek = autoWeek;
+      Object.keys(workoutLogs).forEach(k => {
+        if (k.startsWith('week_')) {
+          const w = parseInt(k.replace('week_', ''));
+          if (w > maxWeek) maxWeek = w;
+        }
+      });
+
+      const ex = findExercise(selectedChartExerciseId) || exercises[0];
+      const points = [];
+
+      for (let w = 1; w <= maxWeek; w++) {
+        const wLogs = (workoutLogs[`week_${w}`] && workoutLogs[`week_${w}`][selectedChartExerciseId]) || [];
+        let val = 0;
+        let setDetails = [];
+
+        if (wLogs.length > 0) {
+          if (selectedChartMetric === 'totweight') {
+            let totW = 0;
+            wLogs.forEach(s => {
+              const wVal = parseFloat(s.weight) || 0;
+              totW += wVal;
+            });
+            val = Math.round(totW * 10) / 10;
+          } else if (selectedChartMetric === 'weight') {
+            let maxW = 0;
+            wLogs.forEach(s => {
+              const wVal = parseFloat(s.weight) || 0;
+              if (wVal > maxW) maxW = wVal;
+            });
+            val = maxW;
+          } else if (selectedChartMetric === 'volume') {
+            let totVol = 0;
+            wLogs.forEach(s => {
+              const wVal = parseFloat(s.weight) || 0;
+              const rVal = parseFloat(s.reps) || 0;
+              totVol += (wVal * rVal);
+            });
+            val = Math.round(totVol);
+          } else if (selectedChartMetric === 'reps') {
+            let maxR = 0;
+            wLogs.forEach(s => {
+              const rVal = parseFloat(s.reps) || 0;
+              if (rVal > maxR) maxR = rVal;
+            });
+            val = maxR;
+          } else if (selectedChartMetric === 'rpe') {
+            let maxRpe = 0;
+            wLogs.forEach(s => {
+              const rpe = parseFloat(s.rpe) || 0;
+              if (rpe > maxRpe) maxRpe = rpe;
+            });
+            val = maxRpe;
+          }
+
+          wLogs.forEach((s, idx) => {
+            if (s.weight || s.reps) {
+              setDetails.push(`S${idx + 1}: ${s.weight || 0}kg × ${s.reps || 0}${s.rpe ? ' (RPE ' + s.rpe + ')' : ''}`);
+            }
+          });
+        }
+
+        points.push({
+          week: w,
+          label: `${w}.H`,
+          value: val,
+          details: setDetails.join(' | ')
+        });
+      }
+
+      // Grafik SVG Çizimi
+      const maxVal = Math.max(...points.map(p => p.value), 10);
+      const minVal = 0;
+      const width = 340;
+      const height = 180;
+      const paddingLeft = 35;
+      const paddingRight = 15;
+      const paddingTop = 25;
+      const paddingBottom = 25;
+
+      const chartW = width - paddingLeft - paddingRight;
+      const chartH = height - paddingTop - paddingBottom;
+
+      const stepX = points.length > 1 ? chartW / (points.length - 1) : chartW / 2;
+
+      const coords = points.map((p, i) => {
+        const x = points.length > 1 ? paddingLeft + (i * stepX) : paddingLeft + (chartW / 2);
+        const y = height - paddingBottom - ((p.value - minVal) / (maxVal - minVal)) * chartH;
+        return { x, y, ...p };
+      });
+
+      // Path strings
+      let polylinePoints = coords.map(c => `${c.x},${c.y}`).join(' ');
+      let areaPoints = `${coords[0].x},${height - paddingBottom} ` + polylinePoints + ` ${coords[coords.length - 1].x},${height - paddingBottom}`;
+
+      let gridLines = '';
+      const gridSteps = 3;
+      for (let g = 0; g <= gridSteps; g++) {
+        const gVal = Math.round(minVal + (g * (maxVal - minVal) / gridSteps));
+        const gy = height - paddingBottom - (g * (chartH / gridSteps));
+        gridLines += `
+          <line x1="${paddingLeft}" y1="${gy}" x2="${width - paddingRight}" y2="${gy}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
+          <text x="${paddingLeft - 6}" y="${gy + 4}" fill="#8E8E93" font-size="9" text-anchor="end">${gVal}</text>
+        `;
+      }
+
+      let circlesAndLabels = '';
+      coords.forEach(c => {
+        circlesAndLabels += `
+          <line x1="${c.x}" y1="${height - paddingBottom}" x2="${c.x}" y2="${height - paddingBottom + 4}" stroke="rgba(255,255,255,0.2)" />
+          <text x="${c.x}" y="${height - paddingBottom + 16}" fill="#8E8E93" font-size="10" font-weight="600" text-anchor="middle">${c.label}</text>
+          
+          <circle cx="${c.x}" cy="${c.y}" r="4.5" fill="#30D158" stroke="#000" stroke-width="2" />
+          ${c.value > 0 ? `<text x="${c.x}" y="${c.y - 8}" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">${c.value}</text>` : ''}
+        `;
+      });
+
+      let unitLabel = '';
+      if (selectedChartMetric === 'totweight') unitLabel = 'Toplam Ağırlık (Tüm Setler Toplamı kg)';
+      else if (selectedChartMetric === 'weight') unitLabel = 'Maksimum Ağırlık (kg)';
+      else if (selectedChartMetric === 'volume') unitLabel = 'Toplam İş Hacmi (kg × Tekrar)';
+      else if (selectedChartMetric === 'reps') unitLabel = 'Maksimum Tekrar';
+      else if (selectedChartMetric === 'rpe') unitLabel = 'Zorluk Derecesi (RPE)';
+
+      const svgHtml = `
+        <div style="font-size:11px; color:var(--accent-green); font-weight:700; margin-bottom:6px; display:flex; justify-content:space-between;">
+          <span>📈 ${unitLabel}</span>
+          <span style="color:var(--text-muted);">${ex.name}</span>
+        </div>
+        <svg viewBox="0 0 ${width} ${height}" style="width:100%; height:auto; overflow:visible;">
+          <defs>
+            <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#30D158" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#30D158" stop-opacity="0.0"/>
+            </linearGradient>
+          </defs>
+          ${gridLines}
+          <polygon points="${areaPoints}" fill="url(#chartGrad)" />
+          <polyline points="${polylinePoints}" fill="none" stroke="#30D158" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+          ${circlesAndLabels}
+        </svg>
+      `;
+
+      chartWrap.innerHTML = svgHtml;
+    }
+    function renderStatsDaySelector() {
+      const selector = document.getElementById('stats-day-selector');
+      selector.innerHTML = '';
+
+      WORKOUT_PROGRAM.forEach((day, index) => {
+        if (!day.isRest) {
+          const btn = document.createElement('button');
+          btn.className = `stats-day-btn ${index === statsSelectedDayIndex ? 'active' : ''}`;
+          
+          let shortName = day.title.split(':')[1]?.trim() || day.title;
+          shortName = shortName.split('(')[0].trim();
+
+          btn.innerHTML = `<span>${day.dayNumber}. Gün:</span> ${shortName}`;
+          btn.onclick = () => {
+            statsSelectedDayIndex = index;
+            renderStatsDaySelector();
+            renderDayProgressStats();
+          };
+          selector.appendChild(btn);
+        }
+      });
+
+      renderDayProgressStats();
+    }
+
+    function renderDayProgressStats() {
+      const day = WORKOUT_PROGRAM[statsSelectedDayIndex];
+      const container = document.getElementById('stats-content-area');
+      container.innerHTML = '';
+
+      document.getElementById('stats-subtitle').innerText = 
+        `${viewingWeek}. Hafta ile ${viewingWeek > 1 ? (viewingWeek - 1) + '. Hafta' : 'başlangıç'} karşılaştırması`;
+
+      const currWeekKey = `week_${viewingWeek}`;
+      const prevWeekKey = `week_${viewingWeek - 1}`;
+      
+      const currLogs = workoutLogs[currWeekKey] || {};
+      const prevLogs = workoutLogs[prevWeekKey] || {};
+
+      let totalVolCurrent = 0;
+      let totalVolPrev = 0;
+      let exercisesImprovedCount = 0;
+
+      const exercises = getDayExercises(day.id);
+      let exercisesCount = exercises.length;
+      let exercisesCardsHtml = '';
+
+      exercises.forEach(ex => {
+        const isTimeBased = (ex.type === 'time');
+        const cSets = currLogs[ex.id] || [];
+        const pSets = prevLogs[ex.id] || [];
+
+        let percentHtml = '';
+        let barFillWidthPrev = '0%';
+        let barFillWidthCurr = '0%';
+        let pLabel = '-';
+        let cLabel = '-';
+
+        if (isTimeBased) {
+          // Duration based
+          let cMaxSec = 0, pMaxSec = 0;
+          let cRaw = '', pRaw = '';
+
+          cSets.forEach(s => {
+            const sec = parseDurationToSeconds(s.reps);
+            if (sec > cMaxSec) { cMaxSec = sec; cRaw = s.reps; }
+          });
+
+          pSets.forEach(s => {
+            const sec = parseDurationToSeconds(s.reps);
+            if (sec > pMaxSec) { pMaxSec = sec; pRaw = s.reps; }
+          });
+
+          const highestSec = Math.max(cMaxSec, pMaxSec, 60);
+          pLabel = pRaw || (pMaxSec > 0 ? pMaxSec + ' sn' : '-');
+          cLabel = cRaw || (cMaxSec > 0 ? cMaxSec + ' sn' : '-');
+
+          if (pMaxSec > 0 && cMaxSec > 0) {
+            barFillWidthPrev = `${Math.min(100, Math.round((pMaxSec / highestSec) * 100))}%`;
+            barFillWidthCurr = `${Math.min(100, Math.round((cMaxSec / highestSec) * 100))}%`;
+            const diffSec = cMaxSec - pMaxSec;
+
+            if (diffSec > 0) {
+              exercisesImprovedCount++;
+              percentHtml = `<span class="stat-percent-badge" style="background: rgba(48, 209, 88, 0.15); color: var(--accent-green);">+${diffSec} sn Süre Artışı 🚀</span>`;
+            } else if (diffSec === 0) {
+              percentHtml = `<span class="stat-percent-badge" style="background: rgba(10, 132, 255, 0.15); color: var(--accent-blue);">Süre Korundu ⚖️</span>`;
+            } else {
+              percentHtml = `<span class="stat-percent-badge" style="background: rgba(255, 69, 58, 0.15); color: var(--accent-red);">${diffSec} sn 🔻</span>`;
+            }
+          } else if (cMaxSec > 0 && pMaxSec === 0) {
+            barFillWidthCurr = '100%';
+            percentHtml = `<span class="stat-percent-badge" style="background: rgba(10, 132, 255, 0.15); color: var(--accent-blue);">İlk Kayıt (${cLabel})</span>`;
+          } else {
+            percentHtml = `<span class="stat-percent-badge" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted);">Henüz Kayıt Yok</span>`;
+          }
+        } else {
+          // Weight & Reps based
+          let cMax = 0, pMax = 0;
+          let cVol = 0, pVol = 0;
+          let cTotWeight = 0, pTotWeight = 0;
+
+          cSets.forEach(s => {
+            const w = parseFloat(s.weight) || 0;
+            const r = parseFloat(s.reps) || 0;
+            if (w > cMax) cMax = w;
+            cTotWeight += w;
+            cVol += (w * r);
+          });
+
+          pSets.forEach(s => {
+            const w = parseFloat(s.weight) || 0;
+            const r = parseFloat(s.reps) || 0;
+            if (w > pMax) pMax = w;
+            pTotWeight += w;
+            pVol += (w * r);
+          });
+
+          totalVolCurrent += cVol;
+          totalVolPrev += pVol;
+
+          // Çubuklarda toplam kaldırılan ağırlık (tüm setlerin toplamı) ve parantez içinde volüm
+          pLabel = pTotWeight > 0 ? `${pTotWeight} kg` : '-';
+          cLabel = cTotWeight > 0 ? `${cTotWeight} kg` : '-';
+
+          const highestPossibleWeight = Math.max(cTotWeight, pTotWeight, 100);
+
+          if (pTotWeight > 0 && cTotWeight > 0) {
+            barFillWidthPrev = `${Math.min(100, Math.round((pTotWeight / highestPossibleWeight) * 100))}%`;
+            barFillWidthCurr = `${Math.min(100, Math.round((cTotWeight / highestPossibleWeight) * 100))}%`;
+
+            const diffWeight = cTotWeight - pTotWeight;
+            const diffPct = ((cTotWeight - pTotWeight) / pTotWeight) * 100;
+
+            if (diffWeight > 0) {
+              exercisesImprovedCount++;
+              percentHtml = `<span class="stat-percent-badge" style="background: rgba(48, 209, 88, 0.15); color: var(--accent-green);">+${diffPct.toFixed(1)}% (+${diffWeight.toFixed(1)} kg Toplam) 🚀</span>`;
+            } else if (diffWeight === 0) {
+              percentHtml = `<span class="stat-percent-badge" style="background: rgba(10, 132, 255, 0.15); color: var(--accent-blue);">0.0% (Ağırlık Korundu) ⚖️</span>`;
+            } else {
+              percentHtml = `<span class="stat-percent-badge" style="background: rgba(255, 69, 58, 0.15); color: var(--accent-red);">${diffPct.toFixed(1)}% 🔻</span>`;
+            }
+          } else if (cTotWeight > 0 && pTotWeight === 0) {
+            barFillWidthCurr = '100%';
+            percentHtml = `<span class="stat-percent-badge" style="background: rgba(10, 132, 255, 0.15); color: var(--accent-blue);">İlk Kayıt (Toplam ${cTotWeight} kg)</span>`;
+          } else {
+            percentHtml = `<span class="stat-percent-badge" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted);">Henüz Kayıt Yok</span>`;
+          }
+        }
+
+        let chipsHtml = '';
+        const maxSets = Math.max(cSets.length, pSets.length);
+        for (let i = 0; i < maxSets; i++) {
+          const cs = cSets[i];
+          const ps = pSets[i];
+          if (cs || ps) {
+            let pText = '-';
+            let cText = '-';
+            if (isTimeBased) {
+              pText = ps ? `${ps.reps || ''} ${ps.weight ? '(' + ps.weight + 'kg)' : ''}`.trim() : '-';
+              cText = cs ? `${cs.reps || ''} ${cs.weight ? '(' + cs.weight + 'kg)' : ''}`.trim() : '-';
+            } else {
+              pText = ps && ps.weight ? `${ps.weight}kg` : '-';
+              cText = cs && cs.weight ? `${cs.weight}kg` : '-';
+            }
+            chipsHtml += `<div class="set-chip">Set ${i + 1}: ${pText} ➔ <strong>${cText}</strong></div>`;
+          }
+        }
+
+        exercisesCardsHtml += `
+          <div class="stat-ex-card">
+            <div class="stat-ex-header">
+              <div class="stat-ex-title">${ex.name} ${ex.isCustom ? '<span style="font-size:11px; opacity:0.6;">(Ekstra)</span>' : ''}</div>
+              ${percentHtml}
+            </div>
+
+            <!-- Comparison Bars -->
+            <div class="stat-bars-container">
+              <div class="bar-row">
+                <span class="bar-label">Geçen Hafta</span>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: ${barFillWidthPrev}; background: #555;"></div>
+                </div>
+                <span class="bar-val">${pLabel}</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">Bu Hafta</span>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: ${barFillWidthCurr}; background: var(--accent-green);"></div>
+                </div>
+                <span class="bar-val" style="color: var(--accent-green);">${cLabel}</span>
+              </div>
+            </div>
+
+            ${chipsHtml ? `<div class="stat-sets-breakdown">${chipsHtml}</div>` : ''}
+          </div>
+        `;
+      });
+
+      let overallVolDiffPct = 0;
+      let overallDiffText = 'İlk Hafta';
+      let overallDiffClass = 'neutral';
+
+      if (totalVolPrev > 0 && totalVolCurrent > 0) {
+        overallVolDiffPct = ((totalVolCurrent - totalVolPrev) / totalVolPrev) * 100;
+        if (overallVolDiffPct > 0) {
+          overallDiffText = `+${overallVolDiffPct.toFixed(1)}% Hacim Artışı 🚀`;
+          overallDiffClass = 'positive';
+        } else if (overallVolDiffPct === 0) {
+          overallDiffText = `Eşit Hacim ⚖️`;
+        } else {
+          overallDiffText = `${overallVolDiffPct.toFixed(1)}% Hacim Değişimi`;
+          overallDiffClass = 'negative';
+        }
+      }
+
+      const summaryHtml = `
+        <div class="stats-summary-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <h3 style="font-size: 16px; font-weight: 800;">${day.title}</h3>
+              <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Tüm program ve ekstra hareketler</p>
+            </div>
+            <span class="stat-percent-badge" style="background: rgba(10, 132, 255, 0.2); color: var(--accent-blue); font-size: 13px;">
+              ${viewingWeek}. Hafta
+            </span>
+          </div>
+
+          <div class="stats-summary-grid">
+            <div class="metric-box">
+              <div class="label">Toplam İş Hacmi (Volüm)</div>
+              <div class="value">${totalVolCurrent.toLocaleString()} kg</div>
+              <div class="diff ${overallDiffClass}">${overallDiffText}</div>
+            </div>
+            <div class="metric-box">
+              <div class="label">Güçlenen Hareketler</div>
+              <div class="value">${exercisesImprovedCount} / ${exercisesCount}</div>
+              <div class="diff positive">Progressive Overload</div>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; margin: 16px 4px 10px; font-weight: 700;">
+          ${day.title} — TÜM HAREKETLERİN KARŞILAŞTIRMASI
+        </h4>
+
+        ${exercisesCardsHtml}
+      `;
+
+      const chartCardHtml = `
+        <div class="chart-container-card">
+          <div class="chart-header">
+            <div>
+              <h3 style="font-size: 15px; font-weight: 800;">📈 Egzersiz Gelişim Grafiği</h3>
+              <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Haftalar arası güç ve volüm trendi</p>
+            </div>
+            <select id="analytics-chart-exercise-select" class="chart-select" onchange="onChartExerciseChange(this.value)">
+              <!-- Hareketler dinamik eklenecek -->
+            </select>
+          </div>
+
+          <div class="chart-metric-chips">
+            <button class="chart-chip active" id="metric-chip-totweight" onclick="setChartMetric('totweight')">Toplam Kg (Tüm Setler)</button>
+            <button class="chart-chip" id="metric-chip-weight" onclick="setChartMetric('weight')">En Yüksek Kg</button>
+            <button class="chart-chip" id="metric-chip-volume" onclick="setChartMetric('volume')">Hacim (Volüm)</button>
+            <button class="chart-chip" id="metric-chip-reps" onclick="setChartMetric('reps')">Maks Tekrar</button>
+            <button class="chart-chip" id="metric-chip-rpe" onclick="setChartMetric('rpe')">RPE (Zorluk)</button>
+          </div>
+
+          <div class="chart-svg-wrap" id="analytics-chart-svg-wrap">
+            <!-- SVG Grafik dinamik çizilecek -->
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = chartCardHtml + summaryHtml;
+      renderAnalyticsChart();
+    }
+
+    // --- 19. TAB SWITCHING ---
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.view-screen').forEach(s => s.classList.remove('active'));
+
+      if (tab === 'workout') {
+        document.querySelectorAll('.tab-item')[0].classList.add('active');
+        document.getElementById('view-workout').classList.add('active');
+        renderCurrentDay();
+      } else if (tab === 'progress') {
+        document.querySelectorAll('.tab-item')[1].classList.add('active');
+        document.getElementById('view-progress').classList.add('active');
+        renderStatsDaySelector();
+      } else if (tab === 'settings') {
+        document.querySelectorAll('.tab-item')[2].classList.add('active');
+        document.getElementById('view-settings').classList.add('active');
+      }
+    }
+
+    // --- 20. BACKUP & RESTORE ---
+    function exportData() {
+      const fullBackup = {
+        logs: workoutLogs,
+        customExercises: customExercises,
+        exerciseOrderMap: exerciseOrderMap,
+        exerciseNotesMap: exerciseNotesMap,
+        baseExerciseDayMap: baseExerciseDayMap,
+        startDate: startDateStr
+      };
+      const jsonString = JSON.stringify(fullBackup, null, 2);
+      const fileName = `overload_fitness_yedek_${new Date().toISOString().slice(0,10)}.json`;
+
+      // 1. Mobil Web Share API desteği varsa doğrudan Dosyalara Kaydet / Paylaş aç
+      if (navigator.share && navigator.canShare) {
+        try {
+          const file = new File([jsonString], fileName, { type: 'application/json' });
+          if (navigator.canShare({ files: [file] })) {
+            navigator.share({
+              files: [file],
+              title: 'Overload Fitness Yedeği',
+              text: 'Overload Fitness antrenman yedeği'
+            }).then(() => {
+              alert('Yedek başarıyla paylaşıldı / kaydedildi!');
+            }).catch((err) => {
+              if (err.name !== 'AbortError') fallbackDownloadBlob(jsonString, fileName);
+            });
+            return;
+          }
+        } catch(e) {}
+      }
+
+      fallbackDownloadBlob(jsonString, fileName);
+    }
+
+    function fallbackDownloadBlob(content, fileName) {
+      try {
+        const blob = new Blob([content], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 1500);
+      } catch(e) {
+        // Son çare data: URI
+        const dataUri = "data:text/json;charset=utf-8," + encodeURIComponent(content);
+        const a = document.createElement('a');
+        a.href = dataUri;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => a.remove(), 1000);
+      }
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed.logs) {
+            workoutLogs = parsed.logs;
+            customExercises = parsed.customExercises || {};
+            exerciseOrderMap = parsed.exerciseOrderMap || {};
+            exerciseNotesMap = parsed.exerciseNotesMap || {};
+            baseExerciseDayMap = parsed.baseExerciseDayMap || {};
+            startDateStr = parsed.startDate || startDateStr;
+          } else {
+            workoutLogs = parsed;
+          }
+          localStorage.setItem('overload_workout_logs', JSON.stringify(workoutLogs));
+          localStorage.setItem('overload_custom_exercises', JSON.stringify(customExercises));
+          localStorage.setItem('overload_exercise_order_map', JSON.stringify(exerciseOrderMap));
+          localStorage.setItem('overload_exercise_notes', JSON.stringify(exerciseNotesMap));
+          localStorage.setItem('overload_base_exercise_day_map', JSON.stringify(baseExerciseDayMap));
+          localStorage.setItem('overload_start_date', startDateStr);
+          alert('Yedek başarıyla yüklendi!');
+          location.reload();
+        } catch (err) {
+          alert('Geçersiz dosya formatı!');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetAllData() {
+      if (confirm('TÜM antrenman geçmişini ve ekstra hareketleri silmek istediğinize emin misiniz?')) {
+        localStorage.clear();
+        workoutLogs = {};
+        customExercises = {};
+        viewingWeek = 1;
+        alert('Tüm veriler sıfırlandı.');
+        location.reload();
+      }
+    }
+
+    // Service Worker for Offline PWA - Cache-First Offline
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          // Sunucu açıksa yeni sürüm kontrolü yap
+          reg.update();
+          reg.onupdatefound = () => {
+            const installingWorker = reg.installing;
+            installingWorker.onstatechange = () => {
+              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // Yeni sürüm yüklendi - sessizce güncelle (reload etme, veri kaybı olabilir)
+                console.log('Yeni sürüm önbelleğe alındı.');
+              }
+            };
+          };
+        }).catch(() => {});
+      });
+
+      // Offline durumunu izle - kullanıcıya bilgi ver
+      window.addEventListener('online', () => {
+        console.log('İnternet bağlantısı geri geldi.');
+      });
+      window.addEventListener('offline', () => {
+        console.log('Çevrimdışı modda çalışıyor - önbellekten yükleniyor.');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
