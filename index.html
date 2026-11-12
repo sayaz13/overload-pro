@@ -1132,6 +1132,13 @@
       <div class="add-custom-exercise-card" id="add-custom-ex-trigger" onclick="openCustomExerciseModal()">
         <span>➕ Bu Güne Ekstra Hareket Ekle (Plank, Kol vb.)</span>
       </div>
+
+      <!-- Toggle Rest Day Button -->
+      <div id="toggle-rest-day-btn" style="display:none; margin:0 16px 16px 16px;">
+        <button onclick="toggleRestDayFromWorkout()" style="width:100%;background:#1c1c1e;border:1px solid #48484A;color:#8E8E93;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;letter-spacing:0.3px;">
+          😴 Bu Günü Dinlenme Gününe Çevir
+        </button>
+      </div>
     </section>
 
     <!-- SCREEN 2: Progress & Analytics View -->
@@ -1416,6 +1423,32 @@
     // Programdaki varsayılan hareketlerin gün değişikliklerini saklamak için
     // Format: { "exId": "day-2" }
     let baseExerciseDayMap = JSON.parse(localStorage.getItem('overload_base_exercise_day_map')) || {};
+    // Dinlenme <-> Antrenman günü override map
+    // Format: { "day-4": true, "day-7": false } → true=dinlenme, false=antrenman
+    let restDayOverrides = JSON.parse(localStorage.getItem('overload_rest_day_overrides')) || {};
+
+    function isDayRest(day) {
+      if (restDayOverrides.hasOwnProperty(day.id)) {
+        return restDayOverrides[day.id];
+      }
+      return day.isRest;
+    }
+
+    function toggleRestDay(dayId) {
+      const day = WORKOUT_PROGRAM.find(d => d.id === dayId);
+      if (!day) return;
+      const currentRest = isDayRest(day);
+      restDayOverrides[dayId] = !currentRest;
+      localStorage.setItem('overload_rest_day_overrides', JSON.stringify(restDayOverrides));
+      renderDayScroller();
+      renderCurrentDay();
+    }
+
+    function toggleRestDayFromWorkout() {
+      const day = WORKOUT_PROGRAM[selectedDayIndex];
+      if (!day) return;
+      toggleRestDay(day.id);
+    }
 
     function getDayExercises(dayId) {
       // 1. Programdaki temel hareketlerden bu güne ait olanları bul (veya bu güne taşınmış olanları)
@@ -1481,7 +1514,7 @@
       select.innerHTML = '';
 
       WORKOUT_PROGRAM.forEach(day => {
-        if (!day.isRest) {
+        if (!isDayRest(day)) {
           const opt = document.createElement('option');
           opt.value = day.id;
           opt.innerText = `${day.dayNumber}. Gün: ${day.title.split(':')[1]?.trim() || day.title}`;
@@ -1918,7 +1951,7 @@
         pill.className = `day-pill ${index === selectedDayIndex ? 'active' : ''}`;
         pill.onclick = () => selectDay(index);
         
-        let shortName = day.isRest ? 'DİNLENME' : day.title.split(':')[1]?.trim() || day.title;
+        let shortName = isDayRest(day) ? 'DİNLENME' : day.title.split(':')[1]?.trim() || day.title;
         shortName = shortName.split('(')[0].trim();
         const dateStr = getDayDateString(viewingWeek, index);
 
@@ -1952,19 +1985,24 @@
       const addTrigger = document.getElementById('add-custom-ex-trigger');
       container.innerHTML = '';
 
-      if (day.isRest) {
+      if (isDayRest(day)) {
         addTrigger.style.display = 'none';
+        document.getElementById('toggle-rest-day-btn').style.display = 'none';
         container.innerHTML = `
           <div class="rest-day-card">
             <div class="rest-day-icon">😴</div>
             <h3>Dinlenme ve Toparlanma Günü</h3>
             <p>Bugün kas lifleriniz onarılıyor ve güçleniyorsunuz. İyi beslenin, protein alın ve uykunuzu tam alın.</p>
+            <button onclick="toggleRestDay('${day.id}')" style="margin-top:16px;background:#1c1c1e;border:1px solid #30D158;color:#30D158;padding:12px 24px;border-radius:12px;font-size:15px;cursor:pointer;">
+              🏋️ Antrenman Günü Yap
+            </button>
           </div>
         `;
         return;
       }
 
       addTrigger.style.display = 'block';
+      document.getElementById('toggle-rest-day-btn').style.display = 'block';
 
       const currentWeekKey = `week_${viewingWeek}`;
       const prevWeekKey = `week_${viewingWeek - 1}`;
@@ -2449,7 +2487,7 @@
 
       const exercises = [];
       WORKOUT_PROGRAM.forEach(day => {
-        if (!day.isRest) {
+        if (!isDayRest(day)) {
           const list = getDayExercises(day.id);
           list.forEach(e => {
             if (!exercises.some(x => x.id === e.id)) {
@@ -2640,7 +2678,7 @@
       selector.innerHTML = '';
 
       WORKOUT_PROGRAM.forEach((day, index) => {
-        if (!day.isRest) {
+        if (!isDayRest(day)) {
           const btn = document.createElement('button');
           btn.className = `stats-day-btn ${index === statsSelectedDayIndex ? 'active' : ''}`;
           
